@@ -99,6 +99,39 @@ iex> RingLogger.tail
 :ok
 ```
 
+You can also `grep`:
+
+```elixir
+iex> RingLogger.grep(~r/[Nn]eedle/)
+
+16:55:41.614 [info]  Needle in a haystack
+```
+
+## Setting log levels per module
+
+Some projects log more than others. It's possible to fine tune log levels on a module level. If you know what you want ahead of time, update your `config.exs`:
+
+```elixir
+config :logger, RingLogger,
+  module_levels: %{
+    Nerves.Network.Udhcpc => :warn,
+    Nerves.Network.Config => :warn,
+    :_ => :debug
+  }
+```
+
+The `:_` is a catch all.
+
+If you'd like to dynamically set log levels, call `RingLogger.level/2`. For
+example:
+
+```elixir
+iex> RingLogger.level(Nerves.Network.Udhcpc, :warn)
+
+or all levels:
+
+iex> Logger.configure(RingLogger, module_levels: %{})
+
 ## Programmatic usage
 
 It can be useful to get a snapshot of the log when an unexpected event occurs.

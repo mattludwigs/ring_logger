@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.5.0
+
+* Bug fixes
+  * Fixed crash when `grep`ing log messages containing iodata
+
+* New features
+  * Added
+
 ## v0.4.0
 
 * New features
