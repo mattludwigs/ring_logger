@@ -207,6 +207,21 @@ defmodule RingLoggerTest do
     assert message =~ "index=1 World"
   end
 
+  test "can change the log level for a module", %{io: io} do
+    Logger.configure_backend(RingLogger, max_size: 1)
+    :ok = RingLogger.attach(io: io)
+    Logger.debug("Foo")
+    assert_receive {:io, _message}
+
+    RingLogger.level(__MODULE__, :error)
+    Logger.debug("Bar")
+    refute_receive {:io, _message}
+
+    RingLogger.level(SomebodyElse, :debug)
+    Logger.debug("Bar")
+    refute_receive {:io, _message}
+  end
+
   defp capture_log(fun) do
     capture_io(:user, fn ->
       fun.()
