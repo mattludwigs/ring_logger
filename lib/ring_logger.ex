@@ -34,8 +34,14 @@ defmodule RingLogger do
 
   alias RingLogger.{Server, Autoclient}
 
+  @typedoc "Server option to control how many log entries are stored"
+  @type max_size :: {:max_size, pos_integer()}
+
+  @typedoc "Server option for specifying per-module log levels"
+  @type module_levels :: {:module_levels, %{module() => Logger.level()}}
+
   @typedoc "Option values used by the ring logger"
-  @type server_option :: {:max_size, pos_integer()}
+  @type server_option :: max_size() | module_levels()
 
   @typedoc "Option values used by client-side functions like `attach` and `tail`"
   @type client_option ::
@@ -128,6 +134,7 @@ defmodule RingLogger do
   iex> RingLogger.level(:_, :debug)
   :ok
   """
+  @spec level(module(), Logger.level()) :: :ok
   def level(module, level) do
     Logger.configure_backend(__MODULE__, module_levels: %{module => level})
   end
